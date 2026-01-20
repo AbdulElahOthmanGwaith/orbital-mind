@@ -1,0 +1,621 @@
+/*
+   Orbital Mind - تأثيرات الحركة والرسوم المتحركة
+*/
+
+/* ===== دوران الكواكب ===== */
+@keyframes planetRotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes planetRotateReverse {
+    from {
+        transform: rotate(360deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+.orbit-animation {
+    animation: planetRotate 20s linear infinite;
+}
+
+.orbit-animation-reverse {
+    animation: planetRotateReverse 20s linear infinite;
+}
+
+/* ===== تأثيرات التوهج ===== */
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 
+            0 0 20px var(--glow-color, rgba(99, 102, 241, 0.4)),
+            0 0 40px var(--glow-color, rgba(99, 102, 241, 0.2)),
+            inset 0 0 20px var(--glow-color, rgba(99, 102, 241, 0.1));
+    }
+    50% {
+        box-shadow: 
+            0 0 30px var(--glow-color, rgba(99, 102, 241, 0.6)),
+            0 0 60px var(--glow-color, rgba(99, 102, 241, 0.3)),
+            inset 0 0 30px var(--glow-color, rgba(99, 102, 241, 0.15));
+    }
+}
+
+.glow-pulse {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowBurst {
+    0% {
+        box-shadow: 0 0 10px var(--glow-color, rgba(99, 102, 241, 0.3));
+    }
+    50% {
+        box-shadow: 
+            0 0 50px var(--glow-color, rgba(99, 102, 241, 0.8)),
+            0 0 100px var(--glow-color, rgba(99, 102, 241, 0.4)),
+            0 0 150px var(--glow-color, rgba(99, 102, 241, 0.2));
+    }
+    100% {
+        box-shadow: 0 0 10px var(--glow-color, rgba(99, 102, 241, 0.3));
+    }
+}
+
+.glow-burst {
+    animation: glowBurst 1s ease-out;
+}
+
+/* ===== تأثيرات الارتداد ===== */
+@keyframes elasticBounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(0.85); }
+    50% { transform: scale(1.1); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.elastic-bounce {
+    animation: elasticBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes springScale {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.3); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+.spring-scale {
+    animation: springScale 0.5s ease-out;
+}
+
+/* ===== تأثيرات التلاشي ===== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-up { animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.slide-in-down { animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.slide-in-left { animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.slide-in-right { animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+/* ===== تأثيرات التكبير ===== */
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes zoomOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+}
+
+@keyframes zoomPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.zoom-in {
+    animation: zoomIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.zoom-out {
+    animation: zoomOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.zoom-pulse {
+    animation: zoomPulse 2s ease-in-out infinite;
+}
+
+/* ===== دوران العناصر ===== */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+.spin-slow {
+    animation: spin 3s linear infinite;
+}
+
+.spin-fast {
+    animation: spin 0.5s linear infinite;
+}
+
+.spin-reverse {
+    animation: spin-reverse 1s linear infinite;
+}
+
+/* ===== تموج الماء ===== */
+@keyframes rippleEffect {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+.ripple-wave {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid var(--accent-cyan);
+    animation: rippleEffect 1s ease-out forwards;
+}
+
+/* ===== نبضات القلب ===== */
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    14% {
+        transform: scale(1.1);
+    }
+    28% {
+        transform: scale(1);
+    }
+    42% {
+        transform: scale(1.1);
+    }
+    70% {
+        transform: scale(1);
+    }
+}
+
+.heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+/* ===== تساقط النجوم ===== */
+@keyframes starfall {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.star-fall {
+    animation: starfall 3s linear infinite;
+}
+
+/* ===== تأثيرات الإعصار ===== */
+@keyframes cyclone {
+    from {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+    to {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+.cyclone {
+    animation: cyclone 2s ease-in-out;
+}
+
+/* ===== تأرجح ===== */
+@keyframes swing {
+    0%, 100% {
+        transform: rotate(-5deg);
+    }
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+.swing {
+    animation: swing 1s ease-in-out infinite;
+    transform-origin: top center;
+}
+
+@keyframes wobble {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    15% {
+        transform: rotate(-10deg);
+    }
+    30% {
+        transform: rotate(8deg);
+    }
+    45% {
+        transform: rotate(-6deg);
+    }
+    60% {
+        transform: rotate(4deg);
+    }
+    75% {
+        transform: rotate(-2deg);
+    }
+}
+
+.wobble {
+    animation: wobble 0.8s ease-in-out;
+}
+
+/* ===== هزاز ===== */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shakeHorizontal {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.shake-horizontal {
+    animation: shakeHorizontal 0.3s ease-in-out;
+}
+
+@keyframes shakeVertical {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(-10px); }
+    75% { transform: translateY(10px); }
+}
+
+.shake-vertical {
+    animation: shakeVertical 0.3s ease-in-out;
+}
+
+/* ===== تأثيرات الانفجار ===== */
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.explode {
+    animation: explode 0.3s ease-out forwards;
+}
+
+@keyframes implode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.implode {
+    animation: implode 0.3s ease-out forwards;
+}
+
+/* ===== تسلسل الجسيمات ===== */
+@keyframes particleStream {
+    0% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100px) scale(0);
+        opacity: 0;
+    }
+}
+
+.particle-stream {
+    animation: particleStream 1s ease-out infinite;
+}
+
+/* ===== تدوير ثلاثي الأبعاد ===== */
+@keyframes rotate3D {
+    from {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+    to {
+        transform: perspective(1000px) rotateY(360deg);
+    }
+}
+
+@keyframes rotate3DX {
+    from {
+        transform: perspective(1000px) rotateX(0deg);
+    }
+    to {
+        transform: perspective(1000px) rotateX(360deg);
+    }
+}
+
+.rotate-3d {
+    animation: rotate3D 2s linear infinite;
+    transform-style: preserve-3d;
+}
+
+.rotate-3d-x {
+    animation: rotate3DX 2s linear infinite;
+    transform-style: preserve-3d;
+}
+
+/* ===== انعكاس ===== */
+@keyframes flip {
+    from {
+        transform: perspective(400px) rotateY(0deg);
+    }
+    to {
+        transform: perspective(400px) rotateY(180deg);
+    }
+}
+
+.flip {
+    animation: flip 0.6s ease-in-out;
+    backface-visibility: hidden;
+}
+
+@keyframes flipInX {
+    from {
+        transform: perspective(400px) rotateX(90deg);
+        opacity: 0;
+    }
+    to {
+        transform: perspective(400px) rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+.flip-in-x {
+    animation: flipInX 0.6s ease-in-out;
+    backface-visibility: hidden;
+}
+
+/* ===== تأثيرات الضباب ===== */
+@keyframes fogMove {
+    0% {
+        transform: translateX(0);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateX(50px);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 0.3;
+    }
+}
+
+.fog-animation {
+    animation: fogMove 10s ease-in-out infinite;
+}
+
+/* ===== نبض الفضاء ===== */
+@keyframes spacePulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.02);
+        filter: brightness(1.1);
+    }
+}
+
+.space-pulse {
+    animation: spacePulse 4s ease-in-out infinite;
+}
+
+/* ===== دوران المدار ===== */
+@keyframes orbitPath {
+    from {
+        stroke-dashoffset: 0;
+    }
+    to {
+        stroke-dashoffset: -100;
+    }
+}
+
+.orbit-dash {
+    animation: orbitPath 2s linear infinite;
+}
+
+/* ===== وميض ===== */
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+    52% { opacity: 0.4; }
+    54% { opacity: 0.8; }
+}
+
+.flicker {
+    animation: flicker 0.1s infinite;
+}
+
+@keyframes flickerSoft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.flicker-soft {
+    animation: flickerSoft 2s ease-in-out infinite;
+}
+
+/* ===== انزلاق ===== */
+@keyframes glide {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+    50% {
+        transform: translateY(0) rotate(0deg);
+    }
+    75% {
+        transform: translateY(20px) rotate(-5deg);
+    }
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+.glide {
+    animation: glide 3s ease-in-out infinite;
+}
+
+/* ===== دوران كوكبي ===== */
+@keyframes planetarySpin {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.planetary-gradient {
+    background: linear-gradient(135deg, #6366F1, #22D3EE, #8B5CF6, #EC4899);
+    background-size: 400% 400%;
+    animation: planetarySpin 5s ease infinite;
+}
+
+/* ===== تأخير الحركة ===== */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+.delay-900 { animation-delay: 0.9s; }
+.delay-1000 { animation-delay: 1s; }
+
+/* ===== سرعة الحركة ===== */
+.speed-fast { animation-duration: 0.3s; }
+.speed-normal { animation-duration: 0.5s; }
+.speed-slow { animation-duration: 1s; }
+.speed-very-slow { animation-duration: 2s; }
+
+/* ===== تكرار الحركة ===== */
+.iteration-once { animation-iteration-count: 1; }
+.iteration-twice { animation-iteration-count: 2; }
+.iteration-infinite { animation-iteration-count: infinite; }

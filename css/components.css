@@ -1,0 +1,645 @@
+/*
+   Orbital Mind - مكونات واجهة المستخدم
+*/
+
+ /* ===== عقدة الكوكب (Node/Planet) ===== */
+.planet-node {
+    position: absolute;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.planet-node:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.planet-node.selected {
+    transform: scale(1.15);
+    z-index: 11;
+}
+
+.planet-node.dragging {
+    transform: scale(1.1);
+    cursor: grabbing;
+}
+
+.planet-core {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.planet-content {
+    padding: 15px;
+    text-align: center;
+    word-break: break-word;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.planet-content svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+}
+
+.planet-glow {
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--node-glow) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.planet-node:hover .planet-glow,
+.planet-node.selected .planet-glow {
+    opacity: 1;
+}
+
+/* ===== ألوان الكواكب ===== */
+.planet-blue {
+    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    --node-glow: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.planet-indigo {
+    background: linear-gradient(135deg, #6366F1, #4F46E5);
+    --node-glow: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.planet-purple {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    --node-glow: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.planet-pink {
+    background: linear-gradient(135deg, #EC4899, #DB2777);
+    --node-glow: rgba(236, 72, 153, 0.4);
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+}
+
+.planet-cyan {
+    background: linear-gradient(135deg, #22D3EE, #0891B2);
+    --node-glow: rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+}
+
+.planet-green {
+    background: linear-gradient(135deg, #10B981, #059669);
+    --node-glow: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.planet-amber {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    --node-glow: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.planet-red {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    --node-glow: rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+/* ===== مؤشر الجاذبية ===== */
+.gravity-indicator {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.planet-node:hover .gravity-indicator,
+.planet-node.selected .gravity-indicator {
+    opacity: 1;
+}
+
+/* ===== خط الربط (Connection Line) ===== */
+.connection-line {
+    pointer-events: none;
+}
+
+.connection-link {
+    stroke-linecap: round;
+    transition: stroke-width 0.2s ease, stroke 0.2s ease;
+}
+
+.connection-link:hover {
+    stroke-width: 4px !important;
+}
+
+.connection-strength-1 {
+    stroke: rgba(100, 116, 139, 0.3);
+    stroke-width: 1;
+}
+
+.connection-strength-2 {
+    stroke: rgba(100, 116, 139, 0.5);
+    stroke-width: 1.5;
+}
+
+.connection-strength-3 {
+    stroke: rgba(99, 102, 241, 0.6);
+    stroke-width: 2;
+}
+
+.connection-strength-4 {
+    stroke: rgba(99, 102, 241, 0.8);
+    stroke-width: 2.5;
+}
+
+.connection-strength-5 {
+    stroke: rgba(34, 211, 238, 1);
+    stroke-width: 3;
+    filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.5));
+}
+
+/* ===== خط السحب المؤقت ===== */
+.temp-connection-line {
+    stroke: var(--accent-cyan);
+    stroke-width: 2;
+    stroke-dasharray: 8, 4;
+    animation: dashMove 0.5s linear infinite;
+}
+
+@keyframes dashMove {
+    to {
+        stroke-dashoffset: -12;
+    }
+}
+
+/* ===== شبكة الفضاء ===== */
+.space-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.1;
+}
+
+.grid-line {
+    stroke: var(--accent-primary);
+    stroke-width: 0.5;
+}
+
+/* ===== منطقة الإسقاط (Drop Zone) ===== */
+.drop-zone {
+    position: absolute;
+    border: 2px dashed var(--border-color);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.drop-zone.active {
+    opacity: 1;
+    border-color: var(--accent-cyan);
+    background: rgba(34, 211, 238, 0.05);
+}
+
+/* ===== تأثيرات الجسيمات ===== */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particleFade 1s ease-out forwards;
+}
+
+@keyframes particleFade {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+.particle-burst {
+    position: absolute;
+    pointer-events: none;
+}
+
+.particle-element {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    animation: particleExplode 0.8s ease-out forwards;
+}
+
+@keyframes particleExplode {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0);
+    }
+}
+
+/* ===== تأثيرات الانتقال ===== */
+.node-enter {
+    animation: nodeAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes nodeAppear {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.node-exit {
+    animation: nodeDisappear 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes nodeDisappear {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+/* ===== تأثير التموج ===== */
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid var(--accent-cyan);
+    animation: rippleExpand 0.6s ease-out forwards;
+}
+
+@keyframes rippleExpand {
+    from {
+        width: 10px;
+        height: 10px;
+        opacity: 1;
+    }
+    to {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+}
+
+/* ===== شريط التحميل ===== */
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan));
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* ===== بطاقات المعلومات ===== */
+.info-card {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+    transition: var(--transition-fast);
+}
+
+.info-card:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--accent-primary);
+}
+
+/* ===== علامات التبويب ===== */
+.tab-container {
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 10px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+/* ===== أدوات التلميح ===== */
+.tooltip {
+    position: absolute;
+    padding: 8px 12px;
+    background: rgba(15, 18, 25, 0.95);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1000;
+    box-shadow: var(--shadow-md);
+}
+
+.tooltip.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== شارات الحالة ===== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.status-active {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+}
+
+.status-active .status-dot {
+    background: #10B981;
+}
+
+.status-idle {
+    background: rgba(245, 158, 11, 0.2);
+    color: #F59E0B;
+}
+
+.status-idle .status-dot {
+    background: #F59E0B;
+}
+
+.status-inactive {
+    background: rgba(100, 116, 139, 0.2);
+    color: #64748B;
+}
+
+.status-inactive .status-dot {
+    background: #64748B;
+}
+
+/* ===== قوائم التحديد ===== */
+.select-wrapper {
+    position: relative;
+}
+
+.select-input {
+    width: 100%;
+    padding: 12px 15px;
+    padding-left: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: rgba(11, 14, 20, 0.8);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    transition: var(--transition-fast);
+}
+
+.select-input:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+.select-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.select-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background: rgba(15, 18, 25, 0.98);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 5px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--transition-fast);
+}
+
+.select-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.select-option {
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-option:hover {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.select-option.selected {
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--accent-cyan);
+}
+
+/* ===== شريط التمرير المخصص ===== */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+}
+
+/* ===== مؤشرات الاتجاه ===== */
+.direction-indicator {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    z-index: 50;
+}
+
+.direction-indicator:hover {
+    background: rgba(99, 102, 241, 0.3);
+    transform: scale(1.1);
+}
+
+.direction-indicator svg {
+    width: 16px;
+    height: 16px;
+    color: var(--accent-cyan);
+}
+
+.direction-north { top: 20px; left: 50%; transform: translateX(-50%); }
+.direction-south { bottom: 90px; left: 50%; transform: translateX(-50%); }
+.direction-east { right: 20px; top: 50%; transform: translateY(-50%); }
+.direction-west { left: 200px; top: 50%; transform: translateY(-50%); }
+
+/* ===== عناصر التحميل ===== */
+.skeleton-loader {
+    background: linear-gradient(90deg, 
+        rgba(99, 102, 241, 0.1) 25%, 
+        rgba(99, 102, 241, 0.2) 50%, 
+        rgba(99, 102, 241, 0.1) 75%);
+    background-size: 200% 100%;
+    animation: skeletonPulse 1.5s ease-in-out infinite;
+    border-radius: 8px;
+}
+
+@keyframes skeletonPulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ===== شارات الإشعارات ===== */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    border-radius: 9px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== تمييز البحث ===== */
+.search-highlight {
+    background: linear-gradient(180deg, transparent 50%, rgba(34, 211, 238, 0.3) 50%);
+    padding: 2px 0;
+}
+
+/* ===== تأثيرات النجاح/الخطأ ===== */
+.success-animation {
+    animation: successPulse 0.5s ease;
+}
+
+@keyframes successPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
+}
+
+.error-shake {
+    animation: errorShake 0.5s ease;
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
