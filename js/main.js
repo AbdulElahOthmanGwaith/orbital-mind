@@ -143,7 +143,7 @@ class OrbitalMind {
             if (text) {
                 const x = (Math.random() - 0.5) * 400;
                 const y = (Math.random() - 0.5) * 400;
-                this.nodes.createNode({ text, x, y });
+                this.nodes.createNode({ content: text, x, y });
             }
         });
 

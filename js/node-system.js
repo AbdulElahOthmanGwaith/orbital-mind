@@ -9,7 +9,7 @@ class NodeSystem {
             minSize: options.minSize || 50,
             maxSize: options.maxSize || 180,
             defaultSize: options.defaultSize || 80,
-            sizeByContent: options.sizeByContent || true,
+            sizeByContent: options.sizeByContent !== false,
             colors: options.colors || [
                 'planet-blue',
                 'planet-indigo',
@@ -51,12 +51,30 @@ class NodeSystem {
     }
 
     /**
+     * تطبيع بيانات العقدة القادمة من الواجهة أو التخزين
+     */
+    normalizeNodeData(data = {}) {
+        const content = typeof data.content === 'string'
+            ? data.content
+            : typeof data.text === 'string' ? data.text : '';
+        const type = typeof data.type === 'string' && data.type.trim()
+            ? data.type.trim()
+            : 'text';
+        const metadata = data.metadata && typeof data.metadata === 'object' && !Array.isArray(data.metadata)
+            ? data.metadata
+            : {};
+
+        return { ...data, type, content, metadata };
+    }
+
+    /**
      * إنشاء عقدة جديدة
      */
-    createNode(data) {
-        const id = data.id || `node-${++this.nodeCounter}-${Date.now()}`;
-        const type = data.type || 'text';
-        const content = data.content || '';
+    createNode(data = {}) {
+        const normalized = this.normalizeNodeData(data);
+        const id = normalized.id || `node-${++this.nodeCounter}-${Date.now()}`;
+        const type = normalized.type;
+        const content = normalized.content;
         const color = data.color || this.getRandomColor();
         
         // حساب الحجم بناءً على المحتوى
@@ -75,12 +93,12 @@ class NodeSystem {
             content,
             color,
             size,
-            x: data.x || 0,
-            y: data.y || 0,
-            rotation: data.rotation || (Math.random() * 30 - 15),
-            createdAt: data.createdAt || new Date().toISOString(),
-            updatedAt: data.updatedAt || new Date().toISOString(),
-            metadata: data.metadata || {}
+            x: normalized.x || 0,
+            y: normalized.y || 0,
+            rotation: normalized.rotation || (Math.random() * 30 - 15),
+            createdAt: normalized.createdAt || new Date().toISOString(),
+            updatedAt: normalized.updatedAt || new Date().toISOString(),
+            metadata: normalized.metadata
         };
 
         this.nodes.set(id, node);
@@ -109,19 +127,24 @@ class NodeSystem {
     /**
      * تحديث عقدة
      */
-    updateNode(nodeId, updates) {
+    updateNode(nodeId, updates = {}) {
         const node = this.nodes.get(nodeId);
         if (!node) return null;
 
-        Object.assign(node, updates, {
+        const updateData = { ...node, ...updates };
+        if (updates.content === undefined && typeof updates.text === 'string') {
+            updateData.content = updates.text;
+        }
+        const normalized = this.normalizeNodeData(updateData);
+        Object.assign(node, normalized, {
             updatedAt: new Date().toISOString()
         });
 
         // إعادة حساب الحجم إذا تغير المحتوى
-        if (updates.content !== undefined && this.config.sizeByContent) {
+        if ((updates.content !== undefined || updates.text !== undefined) && this.config.sizeByContent) {
             node.size = Math.max(
                 this.config.minSize,
-                Math.min(this.config.maxSize, 60 + Math.sqrt(updates.content.length) * 8)
+                Math.min(this.config.maxSize, 60 + Math.sqrt(node.content.length) * 8)
             );
         }
 
@@ -361,9 +384,19 @@ class NodeSystem {
     /**
      * استيراد البيانات
      */
-    import(data) {
-        this.nodes = new Map(data.nodes || []);
-        this.nodeCounter = data.nodeCounter || 0;
+    import(data = {}) {
+        const entries = Array.isArray(data.nodes) ? data.nodes : [];
+        this.nodes = new Map();
+        for (const entry of entries) {
+            if (!Array.isArray(entry) || entry.length < 2 || !entry[1] || typeof entry[1] !== 'object') {
+                continue;
+            }
+            const normalized = this.normalizeNodeData(entry[1]);
+            if (normalized.id) this.nodes.set(normalized.id, normalized);
+        }
+        this.nodeCounter = Number.isInteger(data.nodeCounter) && data.nodeCounter >= 0
+            ? data.nodeCounter
+            : 0;
     }
 
     /**
@@ -388,8 +421,16 @@ class NodeSystem {
     fromJSON(jsonString) {
         try {
             const data = JSON.parse(jsonString);
-            this.nodes.clear();
-            data.forEach(node => this.nodes.set(node.id, node));
+            if (!Array.isArray(data)) return false;
+
+            const imported = new Map();
+            for (const node of data) {
+                if (!node || typeof node !== 'object' || !node.id) continue;
+                const normalized = this.normalizeNodeData(node);
+                imported.set(normalized.id, normalized);
+            }
+
+            this.nodes = imported;
             return true;
         } catch (e) {
             console.error('فشل استيراد البيانات:', e);
